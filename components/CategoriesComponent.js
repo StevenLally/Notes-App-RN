@@ -9,7 +9,8 @@ import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
   return {
-    categories: state.categories
+    categories: state.categories,
+    notes: state.notes
   };
 };
 
@@ -26,11 +27,12 @@ class Categories extends Component {
   render() {
 
     const renderCategory = ({ item }) => {
+      const categoryNotes = this.props.notes.notes.filter(note => note.categoryId === item.id);
       return (
         <View>
-          <Card
-            title={item.category}
-          />
+          <Card title={item.category}>
+            <Text style={{ textAlign: 'center' }}>{`${categoryNotes.length} Total Notes`}</Text>
+          </Card>
         </View>
       );
     };
