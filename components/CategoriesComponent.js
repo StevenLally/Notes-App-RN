@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { baseUrl } from '../shared/baseUrl';
 import Loading from './LoadingComponent';
 import { postCategory } from '../redux/ActionCreators';
-import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
   return {
@@ -25,14 +23,19 @@ class Categories extends Component {
   };
 
   render() {
+    const { navigate } = this.props.navigation;
 
     const renderCategory = ({ item }) => {
+
       const categoryNotes = this.props.notes.notes.filter(note => note.categoryId === item.id);
+
       return (
         <View>
-          <Card title={item.category}>
-            <Text style={{ textAlign: 'center' }}>{`${categoryNotes.length} Total Notes`}</Text>
-          </Card>
+          <TouchableOpacity onPress={() => navigate('Notes', { categoryId: item.id })}>
+            <Card title={item.category}>
+              <Text style={{ textAlign: 'center' }}>{`${categoryNotes.length} Total Notes`}</Text>
+            </Card>
+          </TouchableOpacity>
         </View>
       );
     };
