@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import { fetchCategories, fetchNotes } from '../redux/ActionCreators';
