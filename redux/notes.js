@@ -16,7 +16,7 @@ export const notes = (state = {
       return { ...state, isLoading: false, errMess: action.payload };
 
     case ActionTypes.DELETE_NOTE:
-      return state.filter(note => note !== action.payload);
+      return { ...state, notes: state.notes.filter(note => note.id !== action.payload) };
 
     case ActionTypes.ADD_NOTE:
       const lastNoteIndex = state.notes.length - 1;

@@ -18,3 +18,5 @@ export default function App() {
     </Provider>
   );
 }
+
+//persistor.purge();  if persist store breaks

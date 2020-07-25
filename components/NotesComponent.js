@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, FlatList, Modal, StyleSheet, Button } from 'react-native';
+import { ScrollView, View, Text, FlatList, Modal, StyleSheet, Button, Alert } from 'react-native';
 import { Card, Icon, Input } from 'react-native-elements';
 import Loading from './LoadingComponent';
 import { connect } from 'react-redux';
@@ -14,9 +14,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   postNote,
   deleteNote
-}
+};
 
-function RenderNotes({ notes }) {
+function RenderNotes(props) {
+  const { notes } = props;
 
   const renderNoteItem = ({ item }) => {
 
@@ -40,6 +41,24 @@ function RenderNotes({ notes }) {
               raised
               reverse
               style={styles.cardItem}
+              onPress={() => {
+                Alert.alert(
+                  'Delete Note?',
+                  'Are you sure you wish to delete this note?',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Not Deleted'),
+                      style: 'cancel'
+                    },
+                    {
+                      text: 'OK',
+                      onPress: () => props.handleDelete(item.id)
+                    }
+                  ],
+                  { cancelable: false }
+                )
+              }}
             />
           </View>
         </Card>
@@ -96,6 +115,10 @@ class Notes extends Component {
     });
   }
 
+  handleDelete(noteId) {
+    this.props.deleteNote(noteId);
+  }
+
   render() {
     const { categoryId } = this.props.route.params;
     const notes = this.props.notes.notes.filter(note => note.categoryId === categoryId);
@@ -114,7 +137,10 @@ class Notes extends Component {
 
     return (
       <ScrollView>
-        <RenderNotes notes={notes} />
+        <RenderNotes
+          notes={notes}
+          handleDelete={(noteId) => this.handleDelete(noteId)}
+        />
 
         <Modal
           animationType={'slide'}
