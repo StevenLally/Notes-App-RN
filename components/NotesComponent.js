@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-elements';
+import { ScrollView, View, Text, FlatList, Modal, StyleSheet, Button } from 'react-native';
+import { Card, Icon, Input } from 'react-native-elements';
 import Loading from './LoadingComponent';
 import { connect } from 'react-redux';
+import { deleteNote, postNote } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
   return {
@@ -10,17 +11,38 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = {
+  postNote,
+  deleteNote
+}
+
 function RenderNotes({ notes }) {
 
   const renderNoteItem = ({ item }) => {
 
     return (
       <View>
-        <TouchableOpacity>
-          <Card title={item.title}>
-            <Text>{item.text}</Text>
-          </Card>
-        </TouchableOpacity>
+        <Card title={item.title}>
+          <Text>{item.text}</Text>
+          <View style={styles.cardRow}>
+            <Icon
+              name="pencil"
+              type="font-awesome"
+              color='#5637DD'
+              raised
+              reverse
+              style={styles.cardItem}
+            />
+            <Icon
+              name="trash"
+              type="font-awesome"
+              color='#5637DD'
+              raised
+              reverse
+              style={styles.cardItem}
+            />
+          </View>
+        </Card>
       </View>
     );
   };
@@ -37,6 +59,41 @@ function RenderNotes({ notes }) {
 class Notes extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showModal: false,
+      title: '',
+      text: ''
+    }
+  }
+
+  componentDidMount() {
+    this.props.navigation.setOptions({
+      headerRight: () => <Icon
+        name='plus'
+        type="font-awesome"
+        color='#5637DD'
+        raised
+        reverse
+        onPress={() => this.toggleModal()}
+      />
+    });
+  }
+
+  toggleModal() {
+    this.setState({ showModal: !this.state.showModal });
+  }
+
+  handleAddNote(categoryId) {
+    this.props.postNote(categoryId, this.state.title, this.state.text);
+    this.toggleModal;
+  }
+
+  resetForm() {
+    this.setState({
+      showModal: false,
+      title: '',
+      text: ''
+    });
   }
 
   render() {
@@ -49,14 +106,79 @@ class Notes extends Component {
 
     if (this.props.notes.errMess) {
       return (
-        <RenderNotes notes={notes} />
+        <View>
+          <Text>{this.props.notes.errMess}</Text>
+        </View>
       );
     }
 
     return (
-      <RenderNotes notes={notes} />
+      <ScrollView>
+        <RenderNotes notes={notes} />
+
+        <Modal
+          animationType={'slide'}
+          transparent={false}
+          visible={this.state.showModal}
+          onRequestClose={() => this.toggleModal()}
+        >
+          <View style={styles.modal}>
+            <Input
+              placeholder='Note Title'
+              onChangeText={(title) => this.setState({ title: title })}
+              value={this.state.title}
+            />
+
+            <Input
+              placeholder=''
+              onChangeText={(text) => this.setState({ text: text })}
+              value={this.state.text}
+            />
+
+            <View style={{ margin: 10 }}>
+              <Button
+                onPress={() => {
+                  this.handleAddNote(categoryId);
+                  this.resetForm();
+                }}
+                color='#5637DD'
+                title='Add Note'
+              />
+            </View>
+
+            <View style={{ margin: 10 }}>
+              <Button
+                onPress={() => {
+                  this.toggleModal();
+                  this.resetForm();
+                }}
+                color='#808080'
+                title='Cancel'
+              />
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
     );
   }
 }
 
-export default connect(mapStateToProps)(Notes);
+const styles = StyleSheet.create({
+  cardRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    margin: 20
+  },
+  cardItem: {
+    flex: 1,
+    margin: 10
+  },
+  modal: {
+    justifyContent: 'center',
+    margin: 20
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notes);

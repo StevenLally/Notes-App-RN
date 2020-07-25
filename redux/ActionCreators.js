@@ -22,7 +22,7 @@ export const fetchCategories = () => dispatch => {
         throw errMess;
       })
     .then(response => response.json())
-    .then(category => dispatch(addCategory(category)))
+    .then(categories => dispatch(addCategories(categories)))
     .catch(error => dispatch(categoriesFailed(error.message)));
 };
 
@@ -35,10 +35,10 @@ export const categoriesFailed = errMess => ({
   payload: errMess
 });
 
-export const addCategory = category => ({
-  type: ActionTypes.ADD_CATEGORY,
-  payload: category
-});
+export const addCategories = (categories) => ({
+  type: ActionTypes.ADD_CATEGORIES,
+  payload: categories
+})
 
 export const deleteCategory = categoryId => ({
   type: ActionTypes.DELETE_CATEGORY,
@@ -52,6 +52,12 @@ export const postCategory = category => dispatch => {
 
   dispatch(addCategory(newCategory));
 }
+
+export const addCategory = category => ({
+  type: ActionTypes.ADD_CATEGORY,
+  payload: category
+});
+
 
 //Notes Action Creators
 export const fetchNotes = () => dispatch => {
@@ -74,7 +80,7 @@ export const fetchNotes = () => dispatch => {
         throw errMess;
       })
     .then(response => response.json())
-    .then(note => dispatch(addNote(note)))
+    .then(notes => dispatch(addNotes(notes)))
     .catch(error => dispatch(notesFailed(error.message)));
 };
 
@@ -87,15 +93,15 @@ export const notesFailed = errMess => ({
   payload: errMess
 });
 
-export const addNote = note => ({
-  type: ActionTypes.ADD_NOTE,
-  payload: note
+export const addNotes = notes => ({
+  type: ActionTypes.ADD_NOTES,
+  payload: notes
 });
 
 export const deleteNote = noteId => ({
   type: ActionTypes.DELETE_NOTE,
   payload: noteId
-})
+});
 
 export const postNote = (categoryId, title, text) => dispatch => {
   const newNote = {
@@ -106,3 +112,8 @@ export const postNote = (categoryId, title, text) => dispatch => {
 
   dispatch(addNote(newNote));
 }
+
+export const addNote = note => ({
+  type: ActionTypes.ADD_NOTE,
+  payload: note
+});

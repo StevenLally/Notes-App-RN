@@ -6,7 +6,7 @@ export const categories = (state = {
   categories: []
 }, action) => {
   switch (action.type) {
-    case ActionTypes.ADD_CATEGORY:
+    case ActionTypes.ADD_CATEGORIES:
       return { ...state, isLoading: false, errMess: null, categories: action.payload };
 
     case ActionTypes.CATEGORIES_LOADING:
@@ -17,6 +17,11 @@ export const categories = (state = {
 
     case ActionTypes.DELETE_CATEGORY:
       return state.filter(category => category !== action.payload);
+
+    case ActionTypes.ADD_CATEGORY:
+      const lastCategoryIndex = state.categories.length - 1;
+      action.payload.id = state.categories[lastCategoryIndex].id + 1;
+      return { ...state, isLoading: false, errMess: null, categories: state.categories.concat(action.payload) };
 
     default:
       return state;

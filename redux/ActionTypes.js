@@ -1,9 +1,11 @@
 export const CATEGORIES_LOADING = 'CATEGORIES_LOADING';
+export const ADD_CATEGORIES = 'ADD_CATEGORIES';
 export const ADD_CATEGORY = 'ADD_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CATEGORIES_FAILED = 'CATEGORIES_FAILED';
 
 export const NOTES_LOADING = 'NOTES_LOADING';
+export const ADD_NOTES = 'ADD_NOTES';
 export const ADD_NOTE = 'ADD_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const NOTES_FAILED = 'NOTES_FAILED';
