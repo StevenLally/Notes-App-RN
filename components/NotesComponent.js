@@ -3,7 +3,7 @@ import { ScrollView, View, Text, FlatList, Modal, StyleSheet, Button, Alert } fr
 import { Card, Icon, Input } from 'react-native-elements';
 import Loading from './LoadingComponent';
 import { connect } from 'react-redux';
-import { deleteNote, postNote } from '../redux/ActionCreators';
+import { deleteNote, postNote, updateNote } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
   return {
@@ -13,7 +13,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   postNote,
-  deleteNote
+  deleteNote,
+  updateNote
 };
 
 function RenderNotes(props) {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, TouchableOpacity, ScrollView, Button, Modal, StyleSheet } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, ScrollView, Button, Modal, StyleSheet, Alert } from 'react-native';
 import { Card, Icon, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Loading from './LoadingComponent';
-import { postCategory, deleteCategory } from '../redux/ActionCreators';
+import { postCategory, deleteCategory, deleteCategoryNotes } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
   return {
@@ -14,8 +14,67 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   postCategory,
-  deleteCategory
+  deleteCategory,
+  deleteCategoryNotes
 };
+
+
+function RenderCategories(props) {
+  const { notes } = props;
+  const { categories } = props;
+  const { navigate } = props;
+
+  function RenderCategoryItem({ item }) {
+    const categoryNotes = notes.filter(note => note.categoryId === item.id);
+    const numCategoryNotes = categoryNotes.length;
+    return (
+      <View>
+        <TouchableOpacity onPress={() => navigate('Notes', { categoryId: item.id })}>
+          <Card title={item.category}>
+            <Text style={{ textAlign: 'center' }}>{`${numCategoryNotes} Total Notes`}</Text>
+            <View style={styles.cardRow}>
+              <Icon
+                name="trash"
+                type="font-awesome"
+                color='#5637DD'
+                raised
+                reverse
+                style={styles.cardItem}
+                onPress={() => {
+                  Alert.alert(
+                    'Delete Note?',
+                    'Are you sure you wish to delete this note?',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Not Deleted'),
+                        style: 'cancel'
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => props.handleDelete(item.id, numCategoryNotes)
+                      }
+                    ],
+                    { cancelable: false }
+                  )
+                }}
+              />
+            </View>
+          </Card>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={categories}
+      renderItem={RenderCategoryItem}
+      keyExtractor={item => item.id.toString()}
+    />
+  )
+};
+
 
 class Categories extends Component {
   constructor(props) {
@@ -55,23 +114,34 @@ class Categories extends Component {
     });
   }
 
+  handleDelete(categoryId, numCategoryNotes) {
+    if (numCategoryNotes === 0) {
+      this.props.deleteCategory(categoryId);
+    } else {
+      Alert.alert(
+        'Notes Exist In Category',
+        'Are you sure you wish to delete this category and all its contents?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Not Deleted'),
+            style: 'cancel'
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              this.props.deleteCategoryNotes(categoryId);
+              this.props.deleteCategory(categoryId);
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
-
-    const renderCategory = ({ item }) => {
-
-      const categoryNotes = this.props.notes.notes.filter(note => note.categoryId === item.id);
-
-      return (
-        <View>
-          <TouchableOpacity onPress={() => navigate('Notes', { categoryId: item.id })}>
-            <Card title={item.category}>
-              <Text style={{ textAlign: 'center' }}>{`${categoryNotes.length} Total Notes`}</Text>
-            </Card>
-          </TouchableOpacity>
-        </View>
-      );
-    };
 
     if (this.props.categories.isLoading) {
       return <Loading />
@@ -87,10 +157,11 @@ class Categories extends Component {
 
     return (
       <ScrollView>
-        <FlatList
-          data={this.props.categories.categories}
-          renderItem={renderCategory}
-          keyExtractor={item => item.id.toString()}
+        <RenderCategories
+          categories={this.props.categories.categories}
+          notes={this.props.notes.notes}
+          navigate={navigate}
+          handleDelete={(categoryId, numCategoryNotes) => this.handleDelete(categoryId, numCategoryNotes)}
         />
 
         <Modal
@@ -135,6 +206,19 @@ class Categories extends Component {
 }
 
 const styles = StyleSheet.create({
+  cardRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    margin: 20
+  },
+  cardItem: {
+    flex: 1,
+    marginBottom: 5,
+    borderRadius: 5,
+    height: 30
+  },
   modal: {
     justifyContent: 'center',
     margin: 20

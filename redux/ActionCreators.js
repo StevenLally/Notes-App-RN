@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { exp } from 'react-native-reanimated';
 
 //Category Action Creators
 export const fetchCategories = () => dispatch => {
@@ -103,6 +104,11 @@ export const deleteNote = noteId => ({
   payload: noteId
 });
 
+export const deleteCategoryNotes = categoryId => ({
+  type: ActionTypes.DELETE_CATEGORY_NOTES,
+  payload: categoryId
+});
+
 export const postNote = (categoryId, title, text) => dispatch => {
   const newNote = {
     categoryId,
@@ -115,5 +121,21 @@ export const postNote = (categoryId, title, text) => dispatch => {
 
 export const addNote = note => ({
   type: ActionTypes.ADD_NOTE,
+  payload: note
+});
+
+export const updateNote = (id, categoryId, title, text) => dispatch => {
+  const updatedNote = {
+    id,
+    categoryId,
+    title,
+    text
+  };
+
+  dispatch(editNote(updatedNote));
+}
+
+export const editNote = note => ({
+  type: ActionTypes.EDIT_NOTE,
   payload: note
 });

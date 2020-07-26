@@ -16,7 +16,7 @@ export const categories = (state = {
       return { ...state, isLoading: false, errMess: action.payload };
 
     case ActionTypes.DELETE_CATEGORY:
-      return state.filter(category => category !== action.payload);
+      return { ...state, categories: state.categories.filter(category => category.id !== action.payload) };
 
     case ActionTypes.ADD_CATEGORY:
       const lastCategoryIndex = state.categories.length - 1;

@@ -18,6 +18,9 @@ export const notes = (state = {
     case ActionTypes.DELETE_NOTE:
       return { ...state, notes: state.notes.filter(note => note.id !== action.payload) };
 
+    case ActionTypes.DELETE_CATEGORY_NOTES:
+      return { ...state, notes: state.notes.filter(note => note.categoryId !== action.payload) };
+
     case ActionTypes.ADD_NOTE:
       const lastNoteIndex = state.notes.length - 1;
       action.payload.id = state.notes[lastNoteIndex].id + 1;

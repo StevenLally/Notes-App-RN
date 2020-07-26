@@ -7,5 +7,7 @@ export const CATEGORIES_FAILED = 'CATEGORIES_FAILED';
 export const NOTES_LOADING = 'NOTES_LOADING';
 export const ADD_NOTES = 'ADD_NOTES';
 export const ADD_NOTE = 'ADD_NOTE';
+export const EDIT_NOTE = 'EDIT_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
+export const DELETE_CATEGORY_NOTES = 'DELETE_CATEGORY_NOTES';
 export const NOTES_FAILED = 'NOTES_FAILED';
